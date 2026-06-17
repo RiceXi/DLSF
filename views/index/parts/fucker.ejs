@@ -15,7 +15,6 @@
       </mdui-tooltip>
     </div>
     <mdui-button onclick="buttonTargetAdd()">添加</mdui-button>
-    <mdui-button onClick="targetDeleteAll()">删除所有课程</mdui-button>
   </div>
 
 
@@ -39,6 +38,10 @@
     </tbody>
 
   </table>
+
+  <mdui-button fullwidth style="margin-top: 1rem;margin-right: 0.5rem;" onClick="targetDeleteAll()">删除所有课程
+    <mdui-icon slot="icon" name="delete"></mdui-icon>
+  </mdui-button>
 
   <mdui-button variant="outlined" fullwidth style="margin-top: 1rem" onclick="generateCli()">
     生成 DLSF-CLI 脚本
