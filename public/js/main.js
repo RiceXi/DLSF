@@ -703,6 +703,27 @@ function targetAdd(courseCode, id, swapFromId = "") {
     }
 }
 
+function targetDeleteAll() {
+    if (targetList.length > 0) {
+        mdui.confirm({
+            headline: "要删除所有课程吗？",
+            description: "即将删除所有已添加至Fucker的课程",
+            icon: "delete",
+            confirmText: "确定",
+            cancelText: "取消",
+            onConfirm: () => {
+                localStorage.removeItem("DLSF_target")
+                targetList = []
+                targetListRender()
+                targetSave()
+            },
+            onCancel: () => { }
+        })
+    } else {
+        showMessage("你还未添加任何课程!")
+    }
+}
+
 function targetDelete(id) {
     const name = targetList.filter(t => t.id == id)[0].name
     mdui.confirm({
