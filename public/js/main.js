@@ -6,7 +6,8 @@ let checkIfFull = true
 let particlesLoaded = false
 let particlesPaused = false
 let studentId
-
+let autoReloginTimer = null
+const AUTO_RELOGIN_INTERVAL = 7200000 // 2小时 = 7200000毫秒
 
 // 导轨
 !(function () {
@@ -73,6 +74,8 @@ var targetList = JSON.parse(localStorage.getItem("DLSF_target")) || []
     targetListRender()
     // 如果 cookie 失效，尝试使用用户名密码登录
     if (!await checkCookie()) { buttonSaveUser() }
+    // 启动自动重新登录定时器
+    startAutoRelogin()
 })()
 
 
@@ -143,6 +146,37 @@ async function loginUser() {
     } else {
         return false
     }
+}
+
+// 启动自动重新登录定时器
+function startAutoRelogin() {
+    const username = localStorage.getItem("DLSF_username")
+    const password = localStorage.getItem("DLSF_password")
+    
+    // 只有当用户名和密码都存在时才启动定时器
+    if (!username || !password) {
+        console.log("[自动重登录] 用户名或密码未设置，不启动自动重登录")
+        return
+    }
+    
+    // 避免重复创建定时器
+    if (autoReloginTimer) {
+        clearInterval(autoReloginTimer)
+        console.log("[自动重登录] 清除旧的定时器")
+    }
+    
+    // 启动新的定时器
+    autoReloginTimer = setInterval(async () => {
+        console.log("[自动重登录] 开始执行自动重新登录...")
+        const success = await loginUser()
+        if (success) {
+            console.log("[自动重登录] 重新登录成功")
+        } else {
+            console.log("[自动重登录] 重新登录失败")
+        }
+    }, AUTO_RELOGIN_INTERVAL)
+    
+    console.log(`[自动重登录] 定时器已启动，间隔 ${AUTO_RELOGIN_INTERVAL / 1000 / 60} 分钟`)
 }
 
 // 获取某门课的全部教学班信息
